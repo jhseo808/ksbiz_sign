@@ -1,0 +1,53 @@
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
+from webdriver_manager.chrome import ChromeDriverManager
+
+import time
+import pyautogui
+
+#브라우저 꺼짐 방지
+options = Options()
+options.add_experimental_option("detach", True)
+service = Service(executable_path=ChromeDriverManager().install())
+driver = webdriver.Chrome(service=service, options=options)
+driver.implicitly_wait(3)
+driver.maximize_window()
+
+#ksbiz 테스트 서버 페이지
+driver.get('https://qaksbiz.raonsecure.co.kr:6443/ksbiz/2.2.0.3093/demo/ksbiz/index.jsp')
+#action = ActionChains(driver)
+time.sleep(2)
+pyautogui.scroll(-1000)
+
+#전자서명 페이지
+sign = driver.find_element(By.XPATH, '/html/body/div/div[3]/ul[4]/li[1]/a')
+sign.click()
+
+#전자서명 버튼
+btn_sign = driver.find_element(By.XPATH, '/html/body/div/div[3]/button[1]')
+btn_sign.click()
+time.sleep(3)
+
+#이미지 처리 패키지 opencv-python 설치
+keyboard_off = pyautogui.locateOnScreen('ico_keyboard_off.png')
+pyautogui.click(keyboard_off)
+keyboard_p = pyautogui.locateOnScreen('keyboard_p.png',confidence=0.9)
+pyautogui.click(keyboard_p)
+keyboard_a = pyautogui.locateOnScreen('keyboard_a.png',confidence=0.9)
+pyautogui.doubleClick(keyboard_a)
+keyboard_s = pyautogui.locateOnScreen('keyboard_s.png')
+pyautogui.click(keyboard_s)
+keyboard_0 = pyautogui.locateOnScreen('keyboard_0.png')
+pyautogui.doubleClick(keyboard_0)
+keyboard_1 = pyautogui.locateOnScreen('keyboard_1.png')
+pyautogui.doubleClick(keyboard_1)
+keyboard_up = pyautogui.locateOnScreen('keyboard_up.png')
+pyautogui.click(keyboard_up)
+keyboard_shift_1 = pyautogui.locateOnScreen('keyboard_!.png')
+pyautogui.click(keyboard_shift_1)
+keyboard_shift_2 = pyautogui.locateOnScreen('keyboard_@.png')
+pyautogui.click(keyboard_shift_2)
