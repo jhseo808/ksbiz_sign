@@ -6,48 +6,86 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
 
+import unittest
+import HtmlTestRunner
+
 import time
 import pyautogui
 
-#브라우저 꺼짐 방지
-options = Options()
-options.add_experimental_option("detach", True)
-service = Service(executable_path=ChromeDriverManager().install())
-driver = webdriver.Chrome(service=service, options=options)
-driver.implicitly_wait(3)
-driver.maximize_window()
+class ksbiz_signTest(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        # 브라우저 꺼짐 방지
+        options = Options()
+        options.add_experimental_option("detach", True)
+        service = Service(executable_path=ChromeDriverManager().install())
+        cls.driver = webdriver.Chrome(service=service, options=options)
+        cls.driver.implicitly_wait(3)
+        cls.driver.maximize_window()
 
-#ksbiz 테스트 서버 페이지
-driver.get('https://qaksbiz.raonsecure.co.kr:6443/ksbiz/2.2.0.3093/demo/ksbiz/index.jsp')
-#action = ActionChains(driver)
-time.sleep(2)
-pyautogui.scroll(-1000)
+    def test_page(self):
+        driver = self.driver
+        # ksbiz 테스트 서버 페이지
+        driver.get('https://qaksbiz.raonsecure.co.kr:6443/ksbiz/2.2.0.3093/demo/ksbiz/index.jsp')
+        #action = ActionChains(driver)
+        time.sleep(2)
+        pyautogui.scroll(-1000)
+        print('ksbiz 테스트 페이지 ok')
 
-#전자서명 페이지
-sign = driver.find_element(By.XPATH, '/html/body/div/div[3]/ul[4]/li[1]/a')
-sign.click()
+        # 전자서명 페이지
+        sign = driver.find_element(By.XPATH, '/html/body/div/div[3]/ul[4]/li[1]/a')
+        sign.click()
+        print('전자서명 페이지 ok')
 
-#전자서명 버튼
-btn_sign = driver.find_element(By.XPATH, '/html/body/div/div[3]/button[1]')
-btn_sign.click()
-time.sleep(3)
+        #전자서명 버튼
+        btn_sign = driver.find_element(By.XPATH, '/html/body/div/div[3]/button[1]')
+        btn_sign.click()
+        print('전자 서명 팝업 출력 ok')
+        time.sleep(3)
 
-#이미지 처리 패키지 opencv-python 설치
-keyboard_off = pyautogui.locateOnScreen('ico_keyboard_off.png')
-pyautogui.click(keyboard_off)
-keyboard_p = pyautogui.locateOnScreen('keyboard_p.png',confidence=0.9)
-pyautogui.click(keyboard_p)
-keyboard_a = pyautogui.locateOnScreen('keyboard_a.png',confidence=0.9)
-pyautogui.doubleClick(keyboard_a)
-keyboard_s = pyautogui.locateOnScreen('keyboard_s.png')
-pyautogui.click(keyboard_s)
-keyboard_0 = pyautogui.locateOnScreen('keyboard_0.png')
-pyautogui.doubleClick(keyboard_0)
-keyboard_1 = pyautogui.locateOnScreen('keyboard_1.png')
-pyautogui.doubleClick(keyboard_1)
-keyboard_up = pyautogui.locateOnScreen('keyboard_up.png')
-pyautogui.click(keyboard_up)
-keyboard_shift_1 = pyautogui.locateOnScreen('keyboard_!.png')
-pyautogui.click(keyboard_shift_1)
-keyboard_shift_2 = pyautogui.locateOnScreen('keyboard_@.png')
-pyautogui.click(keyboard_shift_2)
+        #이미지 처리 패키지 opencv-python 설치
+        keyboard_off = pyautogui.locateOnScreen('ico_keyboard_off.png')
+        pyautogui.click(keyboard_off)
+
+        # 하드 디스크 선택(storage2)
+        storage2 = pyautogui.locateOnScreen('storage2.png')
+        pyautogui.click(storage2)
+        print('하드 디스크 선택 ok')
+        time.sleep(0.5)
+
+        # pw = pass0011!@
+        keyboard_p = pyautogui.locateOnScreen('keyboard_p.png',confidence=0.9)
+        pyautogui.click(keyboard_p)
+        keyboard_a = pyautogui.locateOnScreen('keyboard_a.png',confidence=0.9)
+        pyautogui.click(keyboard_a)
+        keyboard_s = pyautogui.locateOnScreen('keyboard_s.png')
+        pyautogui.doubleClick(keyboard_s)
+        keyboard_0 = pyautogui.locateOnScreen('keyboard_0.png')
+        pyautogui.doubleClick(keyboard_0)
+        keyboard_1 = pyautogui.locateOnScreen('keyboard_1.png')
+        pyautogui.doubleClick(keyboard_1)
+        keyboard_up = pyautogui.locateOnScreen('keyboard_up.png')
+        pyautogui.click(keyboard_up)
+        keyboard_shift_1 = pyautogui.locateOnScreen('keyboard_!.png')
+        pyautogui.click(keyboard_shift_1)
+        keyboard_shift_2 = pyautogui.locateOnScreen('keyboard_@.png')
+        pyautogui.click(keyboard_shift_2)
+        keyboard_enter = pyautogui.locateOnScreen('keyboard_enter.png')
+        pyautogui.click(keyboard_enter)
+        print('인증서 암호 정상 입력 ok')
+
+        # 서버로 전송 동작 확인
+        sendtoserver = driver.find_element(By.XPATH, '/html/body/div/div[3]/button[8]')
+        sendtoserver.click()
+        print('서명 확인 성공 ok')
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.driver.close()
+        cls.driver.quit()
+        print('test complete')
+        
+if __name__ == '__main__':
+    runner = HtmlTestRunner.HTMLTestRunner(output='report')
+    suite = unittest.TestLoader().loadTestsFromTestCase(ksbiz_signTest)
+    runner.run(suite)
