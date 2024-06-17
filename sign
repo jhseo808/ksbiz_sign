@@ -23,7 +23,7 @@ class ksbiz_signTest(unittest.TestCase):
         cls.driver.implicitly_wait(3)
         cls.driver.maximize_window()
 
-    def test_page(self):
+    def test_ksbizpage(self):
         driver = self.driver
         # ksbiz 테스트 서버 페이지
         driver.get('https://qaksbiz.raonsecure.co.kr:6443/ksbiz/2.2.0.3093/demo/ksbiz/index.jsp')
@@ -32,11 +32,15 @@ class ksbiz_signTest(unittest.TestCase):
         pyautogui.scroll(-1000)
         print('ksbiz 테스트 페이지 ok')
 
+    def test_signpage(self):
+        driver = self.driver
         # 전자서명 페이지
         sign = driver.find_element(By.XPATH, '/html/body/div/div[3]/ul[4]/li[1]/a')
         sign.click()
         print('전자서명 페이지 ok')
 
+    def test_sign_popup(self):
+        driver = self.driver
         #전자서명 버튼
         btn_sign = driver.find_element(By.XPATH, '/html/body/div/div[3]/button[1]')
         btn_sign.click()
@@ -54,24 +58,24 @@ class ksbiz_signTest(unittest.TestCase):
         time.sleep(0.5)
 
         # pw = pass0011!@
-        keyboard_p = pyautogui.locateOnScreen('keyboard_p.png',confidence=0.9)
-        pyautogui.click(keyboard_p)
-        keyboard_a = pyautogui.locateOnScreen('keyboard_a.png',confidence=0.9)
-        pyautogui.click(keyboard_a)
-        keyboard_s = pyautogui.locateOnScreen('keyboard_s.png')
-        pyautogui.doubleClick(keyboard_s)
-        keyboard_0 = pyautogui.locateOnScreen('keyboard_0.png')
-        pyautogui.doubleClick(keyboard_0)
-        keyboard_1 = pyautogui.locateOnScreen('keyboard_1.png')
-        pyautogui.doubleClick(keyboard_1)
-        keyboard_up = pyautogui.locateOnScreen('keyboard_up.png')
-        pyautogui.click(keyboard_up)
-        keyboard_shift_1 = pyautogui.locateOnScreen('keyboard_!.png')
-        pyautogui.click(keyboard_shift_1)
-        keyboard_shift_2 = pyautogui.locateOnScreen('keyboard_@.png')
-        pyautogui.click(keyboard_shift_2)
-        keyboard_enter = pyautogui.locateOnScreen('keyboard_enter.png')
-        pyautogui.click(keyboard_enter)
+        key_actions = [
+            ('keyboard_p.png', 'click'),
+            ('keyboard_a.png', 'click'),
+            ('keyboard_s.png', 'doubleClick'),
+            ('keyboard_0.png', 'doubleClick'),
+            ('keyboard_1.png', 'doubleClick'),
+            ('keyboard_up.png', 'click'),
+            ('keyboard_!.png', 'click'),
+            ('keyboard_@.png', 'click'),
+            ('keyboard_enter.png', 'click')
+        ]
+
+        for key, action in key_actions:
+            key_location = pyautogui.locateOnScreen(key, confidence=0.9)
+            if key_location:
+                getattr(pyautogui, action)(key_location)
+            else:
+                print(f"Warning: {key} not found on screen.")
         print('인증서 암호 정상 입력 ok')
 
         # 서버로 전송 동작 확인
