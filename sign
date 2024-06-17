@@ -8,7 +8,6 @@ from webdriver_manager.chrome import ChromeDriverManager
 
 import unittest
 import HtmlTestRunner
-
 import time
 import pyautogui
 
@@ -23,30 +22,31 @@ class ksbiz_signTest(unittest.TestCase):
         cls.driver.implicitly_wait(3)
         cls.driver.maximize_window()
 
-    def test_ksbizpage(self):
+    def test_ksbiz1(self):
         driver = self.driver
         # ksbiz 테스트 서버 페이지
         driver.get('https://qaksbiz.raonsecure.co.kr:6443/ksbiz/2.2.0.3093/demo/ksbiz/index.jsp')
         #action = ActionChains(driver)
         time.sleep(2)
         pyautogui.scroll(-1000)
-        print('ksbiz 테스트 페이지 ok')
+        print('ksbiz test page open ok')
 
-    def test_signpage(self):
+    def test_ksbiz2(self):
         driver = self.driver
         # 전자서명 페이지
         sign = driver.find_element(By.XPATH, '/html/body/div/div[3]/ul[4]/li[1]/a')
         sign.click()
-        print('전자서명 페이지 ok')
+        print('sign page open ok')
 
-    def test_sign_popup(self):
+    def test_ksbiz3(self):
         driver = self.driver
         #전자서명 버튼
         btn_sign = driver.find_element(By.XPATH, '/html/body/div/div[3]/button[1]')
         btn_sign.click()
-        print('전자 서명 팝업 출력 ok')
+        print('sign popup ok')
         time.sleep(3)
 
+    def test_ksbiz4(self):
         #이미지 처리 패키지 opencv-python 설치
         keyboard_off = pyautogui.locateOnScreen('ico_keyboard_off.png')
         pyautogui.click(keyboard_off)
@@ -54,9 +54,10 @@ class ksbiz_signTest(unittest.TestCase):
         # 하드 디스크 선택(storage2)
         storage2 = pyautogui.locateOnScreen('storage2.png')
         pyautogui.click(storage2)
-        print('하드 디스크 선택 ok')
+        print('storage2 ok')
         time.sleep(0.5)
 
+    def test_ksbiz5(self):
         # pw = pass0011!@
         key_actions = [
             ('keyboard_p.png', 'click'),
@@ -76,16 +77,18 @@ class ksbiz_signTest(unittest.TestCase):
                 getattr(pyautogui, action)(key_location)
             else:
                 print(f"Warning: {key} not found on screen.")
-        print('인증서 암호 정상 입력 ok')
+        print('keyborad pw ok')
 
+    def test_ksbiz6(self):
+        driver = self.driver
         # 서버로 전송 동작 확인
         sendtoserver = driver.find_element(By.XPATH, '/html/body/div/div[3]/button[8]')
         sendtoserver.click()
-        print('서명 확인 성공 ok')
+        print('sedn to server ok')
 
     @classmethod
     def tearDownClass(cls):
-        cls.driver.close()
+        # cls.driver.close()
         cls.driver.quit()
         print('test complete')
         
